@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %} Feel Good Coffee | Checkout Page {% endblock %}
+{% block content %}
+<div class="container">
+    <section class="row">
+        <div class="col-12">
+            <h1 class="page__heading">Checkout</h1>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-md-8">
+            <h3 class="checkout__header">Customer Details</h3>
+            <div class="checkout__details">
+                <form role="form" method="POST" id="payment-form" class="checkout__form" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    <div class="checkout__form__panel">
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="full_name">Full Name:<span class="form__required"> *</span></label>
+                            {{ order_form.full_name }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="address_line_1">Address Line 1:<span class="form__required"> *</span></label>
+                            {{ order_form.address_line_1 }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="address_line_2">Address Line 2:</label>
+                            {{ order_form.address_line_2 }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="city">Town/City:<span class="form__required"> *</span></label>
+                            {{ order_form.city }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="postcode">Postcode:<span class="form__required"> *</span></label>
+                            {{ order_form.postcode }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="country">Country:<span class="form__required"> *</span></label>
+                            {{ order_form.country }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="phone_number">Phone Number:<span class="form__required"> *</span></label>
+                            {{ order_form.phone_number }}
+                        </div>
+                    </div>
+                    <div class="checkout__form__panel">
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="card_number">Card Number:<span class="form__required"> *</span></label>
+                            {{ payment_form.card_number }}
+                        </div>
+                        <div class="checkout__form__group">
+                            <label class="checkout__form__group__label" for="cvv">CVV:<span class="form__required"> *</span></label>
+                            {{ payment_form.cvv }}
+                        </div>
+                        <div class="checkout__form__group checkout__form__group__inline">
+                            <label class="checkout__form__group__label" for="expiry_month">Expiry Month:<span class="form__required"> *</span></label>
+                            {{ payment_form.expiry_month }}
+                        </div>
+                        <div class="checkout__form__group checkout__form__group__inline">
+                            <label class="checkout__form__group__label" for="expiry_year">Expiry Year:<span class="form__required"> *</span></label>
+                            {{ payment_form.expiry_year }}
+                        </div>
+                        <div class="checkout__form__group">
+                            {{ payment_form.stripe_id }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="sticky-top">
+                <h3 class="checkout__header">Order Summary</h3>
+                {% for item in cart_items %}
+                <section class="row checkout__row">
+                    <div class="col-5">
+                        <img class="img-responsive" src="/{{item.product.image}}" alt="{{item.product.name}}">
+                    </div>
+                    <div class="col-7 align align--center">
+                        <div class="checkout__summary">
+                            <p class="checkout__summary__title">{{item.coffee.name}}</p>
+                            <p class="checkout__summary__price">£{{item.coffee.price}}</p>
+                            <p class="checkout__sumamary__quantity">Qty: {{item.quantity}}</p>
+                        </div>
+                    </div>
+                </section>
+                {% endfor %}
+                <section class="row checkout__row">
+                    <div class="col-12">
+                        <div class="checkout__total">
+                            <p>Order Total: {{ total }}</p>
+                            <a aria-label="make-payment" class="btn btn--primary" id="pay" href="#">Make Payment</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="row">
+                    <div class="col-12">
+                        {% include 'components/message.html' %}
+                        <div id="credit-card-errors" style='display: none;'>
+                            <div class="checkout__errors" id="stripe-error-message"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+         
+        </div>
+    </section>
+</div>
+{% endblock %}
